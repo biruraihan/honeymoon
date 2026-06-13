@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Honeymoon Budget Studio — Copenhagen · Amsterdam · Paris</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#15233B; --ink2:#33405A; --paper:#E9ECF1; --card:#FFFFFF;
+  --rose:#E26D86; --rose-deep:#C4536F; --sea:#2E8A9C; --gold:#CBA14C;
+  --green:#3E9B63; --amber:#E0922F; --red:#CF5247;
+  --line:#DCE1E8; --mut:#6B7689; --shadow:0 1px 2px rgba(21,35,59,.06),0 8px 24px rgba(21,35,59,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+.num{font-family:'DM Mono',monospace;font-feature-settings:"tnum"}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 20px 80px}
+
+/* Header */
+header{padding:14px 0 22px}
+.kicker{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--rose-deep);font-weight:500}
+h1{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(28px,5vw,46px);line-height:1.02;letter-spacing:-.02em;margin:6px 0 14px}
+h1 em{font-style:normal;color:var(--rose)}
+.ribbon{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:'DM Mono',monospace;font-size:13px;color:var(--ink2)}
+.ribbon .stop{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line);padding:6px 12px;border-radius:999px;box-shadow:var(--shadow)}
+.ribbon .stop.off{opacity:.32}
+.ribbon .dot{width:8px;height:8px;border-radius:50%;background:var(--rose)}
+.ribbon .conn{color:var(--mut)}
+
+/* Layout */
+.grid{display:grid;grid-template-columns:380px 1fr;gap:22px;align-items:start}
+@media(max-width:880px){.grid{grid-template-columns:1fr}}
+.panel{position:sticky;top:18px}
+@media(max-width:880px){.panel{position:static}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.block{padding:18px}
+.block + .block{border-top:1px solid var(--line)}
+.label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:11px;display:flex;justify-content:space-between;align-items:baseline}
+.label b{color:var(--ink);font-weight:500}
+
+/* Segmented controls */
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 1 auto;min-width:fit-content;font-family:'Inter';font-size:13px;font-weight:500;color:var(--ink2);background:#F1F3F7;border:1px solid transparent;border-radius:10px;padding:9px 10px;cursor:pointer;transition:all .16s;white-space:nowrap}
+.seg button:hover{background:#E7EAF0}
+.seg button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.seg.rose button.on{background:var(--rose);border-color:var(--rose)}
+.seg button:disabled{opacity:.32;cursor:not-allowed}
+.seg .sub{display:block;font-family:'DM Mono',monospace;font-size:10px;opacity:.7;margin-top:2px}
+
+/* Sliders */
+.slider-row{margin-bottom:14px}
+.slider-row:last-child{margin-bottom:0}
+.slider-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;font-size:13px}
+.slider-head .v{font-family:'DM Mono',monospace;font-weight:500;color:var(--rose-deep)}
+input[type=range]{-webkit-appearance:none;width:100%;height:5px;border-radius:5px;background:var(--line);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--ink);border:3px solid #fff;box-shadow:0 1px 4px rgba(21,35,59,.35);cursor:pointer;transition:transform .1s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.12)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ink);border:3px solid #fff;cursor:pointer}
+input[type=range].rose::-webkit-slider-thumb{background:var(--rose)}
+input[type=range].rose::-moz-range-thumb{background:var(--rose)}
+.fx-num{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;width:74px;text-align:right;border:1px solid var(--line);border-radius:8px;padding:4px 7px;color:var(--ink)}
+.toggle{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--ink2);cursor:pointer;margin-top:4px;user-select:none}
+.toggle input{appearance:none;width:36px;height:20px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;transition:.18s;flex:none}
+.toggle input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.18s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.toggle input:checked{background:var(--sea)}
+.toggle input:checked::after{left:18px}
+
+/* Results */
+.hero{background:linear-gradient(155deg,#16243d 0%,#1d3050 55%,#264064 100%);color:#fff;border-radius:16px;padding:22px 24px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(226,109,134,.45),transparent 70%)}
+.hero .toplabel{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#9fb0cc}
+.hero .total{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(34px,6vw,52px);letter-spacing:-.02em;line-height:1.05;margin:4px 0 2px}
+.hero .sub{font-family:'DM Mono',monospace;font-size:13px;color:#c6d2e6;display:flex;gap:18px;flex-wrap:wrap;margin-top:8px}
+.hero .sub b{color:#fff;font-weight:500}
+.hero .planpill{position:relative;z-index:2;display:inline-block;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:4px 10px;border-radius:999px;margin-bottom:4px}
+
+/* Doability meter */
+.meter{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.meter .verdict{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;margin-bottom:4px}
+.meter .vchip{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;padding:3px 9px;border-radius:999px}
+.meter .detail{font-size:13px;color:var(--mut);margin-bottom:12px}
+.track{height:14px;border-radius:999px;background:#EEF0F4;position:relative;overflow:hidden}
+.fill{height:100%;border-radius:999px;transition:width .35s cubic-bezier(.4,0,.2,1),background .25s}
+.targetmark{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--ink);opacity:.55}
+.track-labels{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:11px;color:var(--mut);margin-top:7px}
+.budget-input{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--ink2)}
+.budget-input input{font-family:'DM Mono',monospace;font-size:13.5px;font-weight:500;border:1px solid var(--line);border-radius:9px;padding:7px 10px;width:160px;color:var(--ink)}
+
+/* Breakdown */
+.break{margin-top:16px}
+.brow{display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.brow:last-child{border-bottom:none}
+.bname{font-size:13.5px;display:flex;align-items:center;gap:9px}
+.bname .tag{width:9px;height:9px;border-radius:3px;flex:none}
+.bsub{font-size:11.5px;color:var(--mut);font-family:'DM Mono',monospace}
+.bamt{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;text-align:right}
+.bbar{grid-column:1/3;height:5px;border-radius:5px;background:#EFF1F5;overflow:hidden;margin-top:2px}
+.bbar i{display:block;height:100%;border-radius:5px;transition:width .35s}
+.totrow{display:flex;justify-content:space-between;align-items:baseline;padding:14px 2px 2px;font-weight:700}
+.totrow .num{font-size:18px}
+
+/* Compare plans */
+.compare{margin-top:22px}
+.compare h2{font-family:'Bricolage Grotesque';font-weight:700;font-size:19px;letter-spacing:-.01em;margin-bottom:3px}
+.compare .hint{font-size:13px;color:var(--mut);margin-bottom:14px}
+.pcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.pcard{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:15px;cursor:pointer;transition:.18s;position:relative}
+.pcard:hover{border-color:var(--ink2);transform:translateY(-2px)}
+.pcard.active{border-color:var(--rose)}
+.pcard.rec{border-color:var(--green)}
+.pcard .badge{position:absolute;top:-9px;right:12px;font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:999px;font-weight:500}
+.pcard .badge.rec{background:var(--green);color:#fff}
+.pcard .badge.active{background:var(--rose);color:#fff}
+.pcard .pname{font-weight:600;font-size:14px;margin-bottom:2px}
+.pcard .proute{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--mut);margin-bottom:10px}
+.pcard .pamt{font-family:'Bricolage Grotesque';font-weight:800;font-size:23px;letter-spacing:-.01em}
+.pcard .pfit{font-family:'DM Mono',monospace;font-size:11.5px;margin-top:5px;font-weight:500}
+.pcard .pper{font-size:11.5px;color:var(--mut);margin-top:2px}
+
+.foot{margin-top:24px;font-size:12px;color:var(--mut);line-height:1.6}
+.foot b{color:var(--ink2);font-weight:600}
+.disclaimer{margin-top:10px;padding:12px 14px;background:#F3F0EC;border-left:3px solid var(--gold);border-radius:0 8px 8px 0;font-size:11.5px;color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Honeymoon Budget Studio · October 2026 · 2 travellers</div>
+    <h1>Tune the trip until it <em>fits</em>.</h1>
+    <div class="ribbon" id="ribbon"></div>
+  </header>
+
+  <div class="grid">
+    <!-- CONTROLS -->
+    <div class="panel">
+      <div class="card">
+        <div class="block">
+          <div class="label">Your plan <b id="planName">All three</b></div>
+          <div class="seg" id="planSeg"></div>
+        </div>
+        <div class="block">
+          <div class="label">Comfort level <b id="tierName">Smart Mix</b></div>
+          <div class="seg rose" id="tierSeg"></div>
+        </div>
+        <div class="block">
+          <div class="label">Long-haul flights <b id="flightName">Best value</b></div>
+          <div class="seg" id="flightSeg"></div>
+        </div>
+        <div class="block" id="amsParBlock">
+          <div class="label">Amsterdam → Paris</div>
+          <div class="seg" id="amsParSeg"></div>
+        </div>
+        <div class="block">
+          <div class="label">Nights per city <b id="nightsTotal"></b></div>
+          <div id="nightSliders"></div>
+        </div>
+        <div class="block">
+          <div class="label">Exchange rates → Rupiah</div>
+          <div class="slider-row">
+            <div class="slider-head"><span>US Dollar (flights)</span><input class="fx-num num" id="usdNum" type="number" step="50"></div>
+            <input type="range" id="usdSlide" min="16500" max="20000" step="50">
+          </div>
+          <div class="slider-row">
+            <div class="slider-head"><span>Euro (everything in Europe)</span><input class="fx-num num" id="eurNum" type="number" step="50"></div>
+            <input type="range" class="rose" id="eurSlide" min="18500" max="22500" step="50">
+          </div>
+          <label class="toggle"><input type="checkbox" id="linkEur"><span>Move the euro with the dollar (rupiah weakens broadly)</span></label>
+        </div>
+        <div class="block">
+          <div class="label">Fine-tuning</div>
+          <div class="slider-row">
+            <div class="slider-head"><span>Contingency buffer</span><span class="v"><span id="contVal">10</span>%</span></div>
+            <input type="range" id="contSlide" min="5" max="15" step="1" value="10">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div>
+      <div class="hero">
+        <div class="planpill" id="heroPill">All three cities</div>
+        <div class="toplabel">Total for 2 — all in</div>
+        <div class="total num" id="heroTotal">Rp 0</div>
+        <div class="sub">
+          <span>Per person <b class="num" id="heroPP">Rp 0</b></span>
+          <span>Per day <b class="num" id="heroDay">Rp 0</b></span>
+          <span><b class="num" id="heroNights">0</b> nights · <b class="num" id="heroDays">0</b> days</span>
+        </div>
+      </div>
+
+      <div class="meter">
+        <div class="verdict"><span id="vIcon">●</span><span id="vText">—</span><span class="vchip num" id="vChip"></span></div>
+        <div class="detail" id="vDetail"></div>
+        <div class="track"><div class="fill" id="fill"></div><div class="targetmark" id="tmark"></div></div>
+        <div class="track-labels"><span>Rp 0</span><span id="trackMax"></span></div>
+        <div class="budget-input">Our budget ceiling:&nbsp;<span style="font-family:'DM Mono'">Rp</span><input class="num" id="targetInput" type="number" step="1000000"></div>
+      </div>
+
+      <div class="card break">
+        <div class="block">
+          <div class="label">Where the money goes</div>
+          <div id="breakdown"></div>
+          <div class="totrow"><span>Total for 2 people</span><span class="num" id="breakTotal"></span></div>
+        </div>
+      </div>
+
+      <div class="compare">
+        <h2>Which plan is most doable?</h2>
+        <div class="hint">Each plan priced at your current comfort, flights & rates. Tap one to load it. Green = the richest plan that still fits your ceiling.</div>
+        <div class="pcards" id="pcards"></div>
+      </div>
+
+      <div class="foot">
+        <div class="disclaimer">These are planning estimates for 2 people in October 2026 — not quotes. Flights are priced in US dollars; everything inside Europe is in euros, so the <b>euro</b> rate moves your total the most. Rates default to mid-market on 12 Jun 2026 (USD ≈ Rp 17,850 · EUR ≈ Rp 20,600) and will differ at booking.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const fmt = n => 'Rp ' + Math.round(n).toLocaleString('id-ID');
+const fmtM = n => 'Rp ' + (Math.round(n/100000)/10).toLocaleString('id-ID') + ' jt';
+
+// ---- Cost model (native units) ----
+const PLANS = {
+  cph:    {name:'Copenhagen only',        cities:['cph'],              def:{cph:10}},
+  cphpar: {name:'Copenhagen + Paris',     cities:['cph','par'],        def:{cph:5,par:6}},
+  cphams: {name:'Copenhagen + Amsterdam', cities:['cph','ams'],        def:{cph:6,ams:5}},
+  all:    {name:'All three cities',       cities:['cph','ams','par'],  def:{cph:4,ams:3,par:4}},
+};
+const CITY = {cph:'Copenhagen', ams:'Amsterdam', par:'Paris'};
+const TIERS = {lean:'Lean', smart:'Smart Mix', comfort:'Comfort'};
+const FLIGHTS = {value:'Best value', smooth:'Smooth', fastest:'Fastest'};
+const intlUSD = {value:790, smooth:925, fastest:1300};      // per person, round-trip/open-jaw
+const accEUR  = {lean:{cph:90,ams:100,par:95}, smart:{cph:145,ams:160,par:150}, comfort:{cph:220,ams:240,par:225}}; // per night, 2 ppl
+const foodEUR = {lean:45, smart:72, comfort:105};   // per day, 2 ppl
+const transEUR= {lean:9.3, smart:11.5, comfort:14}; // per day, 2 ppl
+const sightEUR= {lean:9, smart:15, comfort:25};     // per day, 2 ppl
+const cphAms  = {lean:130, smart:160, comfort:185};
+const cphPar  = {lean:170, smart:210, comfort:250};
+const amsPar  = {train:{lean:90,smart:130,comfort:170}, flight:{lean:120,smart:150,comfort:185}, bus:{lean:45,smart:45,comfort:45}};
+const VISA_EUR=180, VISA_IDR=2008000;
+const BASE_USD=17850, BASE_EUR=20600;
+
+const CAT_COLORS={flights:'#15233B',inter:'#2E8A9C',stay:'#E26D86',food:'#CBA14C',trans:'#5B7BB0',sights:'#7BA86A',visa:'#9A8CB5',cont:'#B9C0CC'};
+
+function intercity(plan, tier, ap){
+  const legs=[]; let eur=0;
+  if(plan==='cphpar'){eur=cphPar[tier]; legs.push(['Copenhagen → Paris · flight', eur]);}
+  else if(plan==='cphams'){eur=cphAms[tier]; legs.push(['Copenhagen → Amsterdam · flight', eur]);}
+  else if(plan==='all'){
+    const a=cphAms[tier], b=amsPar[ap][tier];
+    eur=a+b; legs.push(['Copenhagen → Amsterdam · flight', a]); legs.push(['Amsterdam → Paris · '+ap, b]);
+  }
+  return {eur, legs};
+}
+
+function compute(plan, nights, tier, flight, ap, usd, eur, contPct){
+  const cities = PLANS[plan].cities;
+  const totalNights = cities.reduce((s,c)=>s+(nights[c]||0),0);
+  const days = totalNights + 1;
+  const multi = cities.length>1;
+  const flightsIDR = intlUSD[flight] * 2 * usd;
+  const ic = intercity(plan, tier, ap);
+  const interIDR = ic.eur * eur;
+  const stayEUR = cities.reduce((s,c)=>s + (nights[c]||0)*accEUR[tier][c], 0);
+  const stayIDR = stayEUR*eur;
+  const foodIDR = days*foodEUR[tier]*eur;
+  const transIDR= days*transEUR[tier]*eur;
+  const sightIDR= days*sightEUR[tier]*eur;
+  const visaIDR = VISA_EUR*eur + VISA_IDR;
+  const subtotal = flightsIDR+interIDR+stayIDR+foodIDR+transIDR+sightIDR+visaIDR;
+  const cont = subtotal*contPct/100;
+  const total = subtotal+cont;
+  return {totalNights, days, doorDays: totalNights+3, total, perPerson:total/2,
+    perDay: total/(totalNights+3),
+    cats:[
+      {k:'flights',n:'Long-haul flights',s:FLIGHTS[flight]+' · 2 pax',v:flightsIDR},
+      ...(ic.legs.length?[{k:'inter',n:'Between cities',s:ic.legs.map(l=>l[0].split('·')[1].trim()).join(' + '),v:interIDR}]:[]),
+      {k:'stay',n:'Accommodation',s:totalNights+' nights',v:stayIDR},
+      {k:'food',n:'Food & cafés',s:days+' days',v:foodIDR},
+      {k:'trans',n:'Local transport',s:days+' days',v:transIDR},
+      {k:'sights',n:'Sightseeing',s:'mostly free',v:sightIDR},
+      {k:'visa',n:'Schengen visa',s:'2 pax, via Denmark',v:visaIDR},
+      {k:'cont',n:'Contingency',s:contPct+'% buffer',v:cont},
+    ]};
+}
+
+// ---- State ----
+const S = {plan:'all', tier:'smart', flight:'value', ap:'train',
+  nights:{...PLANS.all.def}, usd:BASE_USD, eur:BASE_EUR, linkEur:false, cont:10, target:95000000};
+
+// ---- Builders ----
+function seg(id, opts, cur, cb, subs){
+  const el=document.getElementById(id); el.innerHTML='';
+  Object.entries(opts).forEach(([k,v])=>{
+    const b=document.createElement('button'); b.className=k===cur?'on':'';
+    b.innerHTML=v+(subs&&subs[k]?`<span class="sub">${subs[k]}</span>`:'');
+    b.onclick=()=>cb(k); el.appendChild(b);
+  });
+}
+function buildNightSliders(){
+  const host=document.getElementById('nightSliders'); host.innerHTML='';
+  PLANS[S.plan].cities.forEach(c=>{
+    const row=document.createElement('div'); row.className='slider-row';
+    row.innerHTML=`<div class="slider-head"><span>${CITY[c]}</span><span class="v"><span id="n_${c}">${S.nights[c]}</span> nights</span></div>
+      <input type="range" min="2" max="8" step="1" value="${S.nights[c]}" id="sl_${c}">`;
+    host.appendChild(row);
+    row.querySelector('input').oninput=e=>{S.nights[c]=+e.target.value; document.getElementById('n_'+c).textContent=e.target.value; render();};
+  });
+}
+
+function render(){
+  // ribbon
+  const allStops=['cph','ams','par'];
+  const conns={cph_ams:'✈', ams_par:'🚄', cph_par:'✈'};
+  const active=PLANS[S.plan].cities;
+  let rib='<span class="stop"><span class="dot"></span>Jakarta</span><span class="conn">✈</span>';
+  allStops.forEach((c,i)=>{
+    const on=active.includes(c);
+    rib+=`<span class="stop ${on?'':'off'}"><span class="dot"></span>${CITY[c]}</span>`;
+    if(i<allStops.length-1) rib+=`<span class="conn">${S.plan==='all'?(c==='cph'?'✈':'🚄'):'·'}</span>`;
+  });
+  rib+='<span class="conn">✈</span><span class="stop"><span class="dot"></span>home</span>';
+  document.getElementById('ribbon').innerHTML=rib;
+
+  // amsPar block visibility
+  document.getElementById('amsParBlock').style.display = S.plan==='all' ? '' : 'none';
+
+  const r=compute(S.plan,S.nights,S.tier,S.flight,S.ap,S.usd,S.eur,S.cont);
+
+  document.getElementById('planName').textContent=PLANS[S.plan].name;
+  document.getElementById('tierName').textContent=TIERS[S.tier];
+  document.getElementById('flightName').textContent=FLIGHTS[S.flight];
+  document.getElementById('nightsTotal').textContent=r.totalNights+' nights total';
+  document.getElementById('heroPill').textContent=PLANS[S.plan].name;
+  document.getElementById('heroTotal').textContent=fmt(r.total);
+  document.getElementById('heroPP').textContent=fmt(r.perPerson);
+  document.getElementById('heroDay').textContent=fmt(r.perDay);
+  document.getElementById('heroNights').textContent=r.totalNights;
+  document.getElementById('heroDays').textContent=r.doorDays;
+  document.getElementById('breakTotal').textContent=fmt(r.total);
+
+  // breakdown
+  const maxV=Math.max(...r.cats.map(c=>c.v));
+  document.getElementById('breakdown').innerHTML=r.cats.map(c=>`
+    <div class="brow">
+      <div class="bname"><span class="tag" style="background:${CAT_COLORS[c.k]}"></span>${c.n} <span class="bsub">${c.s}</span></div>
+      <div class="bamt">${fmt(c.v)}</div>
+      <div class="bbar"><i style="width:${(c.v/maxV*100).toFixed(1)}%;background:${CAT_COLORS[c.k]}"></i></div>
+    </div>`).join('');
+
+  // doability
+  const t=S.target, ratio=r.total/t;
+  const max=Math.max(t,r.total)*1.04;
+  const fill=document.getElementById('fill');
+  fill.style.width=Math.min(100,r.total/max*100)+'%';
+  document.getElementById('tmark').style.left=(t/max*100)+'%';
+  document.getElementById('trackMax').textContent=fmtM(max);
+  const diff=t-r.total;
+  let col,icon,txt,chip,detail;
+  if(ratio<=0.9){col=getCSS('--green');icon='✓';txt='Comfortably within budget';chip='–'+fmtM(diff);detail=`You'd have about ${fmt(diff)} to spare — room to upgrade a few nights or add nicer dinners.`;}
+  else if(ratio<=1.0){col=getCSS('--green');icon='✓';txt='Fits your budget';chip='–'+fmtM(diff);detail=`Lands just under your ceiling, with ${fmt(diff)} of headroom.`;}
+  else if(ratio<=1.08){col=getCSS('--amber');icon='!';txt='Just over — close';chip='+'+fmtM(-diff);detail=`About ${fmt(-diff)} over. Trim a night or two, or drop one comfort level to pull it under.`;}
+  else{col=getCSS('--red');icon='✕';txt='Over budget';chip='+'+fmtM(-diff);detail=`${fmt(-diff)} above your ceiling. Try the Lean tier, fewer nights, or best-value flights.`;}
+  fill.style.background=col;
+  document.getElementById('vIcon').textContent=icon; document.getElementById('vIcon').style.color=col;
+  document.getElementById('vText').textContent=txt;
+  const vc=document.getElementById('vChip'); vc.textContent=chip; vc.style.background=col+'22'; vc.style.color=col;
+  document.getElementById('vDetail').textContent=detail;
+
+  renderCompare();
+}
+function getCSS(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+
+function renderCompare(){
+  const rows=Object.keys(PLANS).map(p=>{
+    const r=compute(p,PLANS[p].def,S.tier,S.flight,S.ap,S.usd,S.eur,S.cont);
+    return {p, name:PLANS[p].name, total:r.total, pp:r.perPerson,
+      route:PLANS[p].cities.map(c=>CITY[c].slice(0,3)).join(' · '), fits:r.total<=S.target};
+  }).sort((a,b)=>a.total-b.total);
+  // recommend: richest (most cities) plan that fits; else cheapest
+  const fitting=rows.filter(r=>r.fits);
+  let rec;
+  if(fitting.length){ rec=fitting.reduce((best,r)=>PLANS[r.p].cities.length>=PLANS[best.p].cities.length?r:best, fitting[0]).p; }
+  else { rec=rows[0].p; }
+  document.getElementById('pcards').innerHTML=rows.map(r=>{
+    const isRec=r.p===rec, isAct=r.p===S.plan;
+    const fitTxt=r.fits?`<span style="color:${getCSS('--green')}">✓ fits — ${fmtM(S.target-r.total)} to spare</span>`
+      :`<span style="color:${getCSS('--red')}">over by ${fmtM(r.total-S.target)}</span>`;
+    return `<div class="pcard ${isAct?'active':''} ${isRec?'rec':''}" data-p="${r.p}">
+      ${isRec?'<span class="badge rec">Most doable</span>':(isAct?'<span class="badge active">Viewing</span>':'')}
+      <div class="pname">${r.name}</div>
+      <div class="proute">${r.route}</div>
+      <div class="pamt">${fmt(r.total)}</div>
+      <div class="pfit">${fitTxt}</div>
+      <div class="pper">${fmt(r.pp)} / person</div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.pcard').forEach(c=>c.onclick=()=>{
+    S.plan=c.dataset.p; S.nights={...PLANS[S.plan].def};
+    seg('planSeg',Object.fromEntries(Object.entries(PLANS).map(([k,v])=>[k,v.name])),S.plan,setPlan);
+    buildNightSliders(); render();
+  });
+}
+
+// ---- Wire controls ----
+function setPlan(k){S.plan=k; S.nights={...PLANS[k].def}; seg('planSeg',planOpts,k,setPlan); buildNightSliders(); render();}
+const planOpts=Object.fromEntries(Object.entries(PLANS).map(([k,v])=>[k,v.name]));
+seg('planSeg',planOpts,S.plan,setPlan);
+function setTier(k){S.tier=k; seg('tierSeg',TIERS,k,setTier); render();}
+seg('tierSeg',TIERS,S.tier,setTier);
+const flightSubs={value:'~$790pp',smooth:'~$925pp',fastest:'~$1300pp'};
+function setFlight(k){S.flight=k; seg('flightSeg',FLIGHTS,k,setFlight,flightSubs); render();}
+seg('flightSeg',FLIGHTS,S.flight,setFlight,flightSubs);
+const apOpts={train:'Train',flight:'Flight',bus:'Bus'};
+const apSubs={train:'3h20 · scenic',flight:'~1h20',bus:'~7h · cheapest'};
+function setAp(k){S.ap=k; seg('amsParSeg',apOpts,k,setAp,apSubs); render();}
+seg('amsParSeg',apOpts,S.ap,setAp,apSubs);
+
+buildNightSliders();
+
+// FX
+const usdS=document.getElementById('usdSlide'), usdN=document.getElementById('usdNum');
+const eurS=document.getElementById('eurSlide'), eurN=document.getElementById('eurNum');
+usdS.value=S.usd; usdN.value=S.usd; eurS.value=S.eur; eurN.value=S.eur;
+const CROSS=BASE_EUR/BASE_USD;
+function setUSD(v){S.usd=v; usdS.value=v; usdN.value=v; if(S.linkEur){S.eur=Math.round(v*CROSS); eurS.value=S.eur; eurN.value=S.eur;} render();}
+function setEUR(v){S.eur=v; eurS.value=v; eurN.value=v; render();}
+usdS.oninput=e=>setUSD(+e.target.value);
+usdN.onchange=e=>setUSD(+e.target.value);
+eurS.oninput=e=>{S.linkEur=false; document.getElementById('linkEur').checked=false; setEUR(+e.target.value);};
+eurN.onchange=e=>setEUR(+e.target.value);
+document.getElementById('linkEur').onchange=e=>{S.linkEur=e.target.checked; if(S.linkEur) setUSD(S.usd);};
+
+// contingency + target
+document.getElementById('contSlide').oninput=e=>{S.cont=+e.target.value; document.getElementById('contVal').textContent=e.target.value; render();};
+const ti=document.getElementById('targetInput'); ti.value=S.target;
+ti.onchange=e=>{S.target=+e.target.value||S.target; render();};
+
+render();
+</script>
+</body>
+</html>
